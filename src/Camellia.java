@@ -1,4 +1,3 @@
-import java.math.BigInteger;
 
 /**
  * Created by daniil on 19.02.17.
@@ -11,6 +10,7 @@ public class Camellia {
 
     private static final long key = 3752934253104L;
     private static final long message = 7259475248759574234L;
+    private static long decryptedMessage;
 
     public static final long MASK8 = 0xffL;
     public static final long MASK32 = 0xffffL;
@@ -38,6 +38,8 @@ public class Camellia {
         calculateSupportKeys();
         encrypt();
         System.out.println("cipherText" + String.valueOf(cipherText));
+        decrypt();
+        System.out.println("decryptedMessage" + String.valueOf(decryptedMessage));
     }
 
     private void createKeys() {
@@ -95,5 +97,23 @@ public class Camellia {
         d2 = d2 ^ Functions.F(d1, k17); d1 = d1 ^ Functions.F(d2, k18);
         d2 = d2 ^ kw3; d1 = d1 ^ kw4;
         cipherText = (d2 << 64) | d1;
+    }
+
+    private void decrypt() {
+        d1 = cipherText >> 64; d2 = cipherText & MASK64;
+        d1 = d1 ^ kw3; d2 = d2 ^ kw4;
+        d2 = d2 ^ Functions.F(d1, k18); d1 = d1 ^ Functions.F(d2, k17);
+        d2 = d2 ^ Functions.F(d1, k16); d1 = d1 ^ Functions.F(d2, k15);
+        d2 = d2 ^ Functions.F(d1, k14); d1 = d1 ^ Functions.F(d2, k13);
+        d1 = Functions.FL(d1, ke4); d2 = Functions.FLINV(d2, ke3);
+        d2 = d2 ^ Functions.F(d1, k12); d1 = d1 ^ Functions.F(d2, k11);
+        d2 = d2 ^ Functions.F(d1, k10); d1 = d1 ^ Functions.F(d2, k9);
+        d2 = d2 ^ Functions.F(d1, k8); d1 = d1 ^ Functions.F(d2, k7);
+        d1 = Functions.FL   (d1, ke3); d2 = Functions.FLINV(d2, ke4);
+        d2 = d2 ^ Functions.F(d2, k6); d1 = d1 ^ Functions.F(d2, k5);
+        d2 = d2 ^ Functions.F(d1, k4); d1 = d1 ^ Functions.F(d2, k3);
+        d2 = d2 ^ Functions.F(d1, k2); d1 = d1 ^ Functions.F(d2, k1);
+        d2 = d2 ^ kw3; d1 = d1 ^ kw4;
+        decryptedMessage = (d2 << 64) | d1;
     }
 }
