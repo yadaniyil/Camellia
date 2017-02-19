@@ -25,7 +25,7 @@ public class Camellia {
     private static final long c6 = 0xB05688C2B3E6C1FDL;
 
 
-    private long kl, kr, d1, d2;
+    private long kl, kr, d1, d2, ka, kb;
 
     public Camellia() {
         createKeys();
@@ -41,5 +41,16 @@ public class Camellia {
         d1 = (kl ^ kr) >> 64;
         d2 = (kl ^ kr) & MASK64;
         d2 = d2 ^ Functions.F(d1, c1);
+        d1 = d1 ^ Functions.F(d2, c2);
+        d1 = d1 ^ (kl >> 64);
+        d2 = d2 ^ (kl & MASK64);
+        d2 = d2 ^ Functions.F(d1, c3);
+        d1 = d1 ^ Functions.F(d2, c4);
+        ka = (d1 << 64) | d2;
+        d1 = (ka ^ kr) >> 64;
+        d2 = (ka ^ kr) & MASK64;
+        d2 = d2 ^ Functions.F(d1, c5);
+        d1 = d1 ^ Functions.F(d2, c6);
+        kb = (d1 << 64) | d2;
     }
 }

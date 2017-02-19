@@ -25,13 +25,16 @@ public class Functions {
         t7 = SBox.getSBox4(t7);
         t8 = SBox.getSBox1(t8);
 
-        y1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
-        y2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
-        y3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
-        y4 = t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
-        y5 = t1 ^ t2 ^ t6 ^ t7 ^ t8;
-        y6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
-        y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
-        y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
+        y1 = (byte) (t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8);
+        y2 = (byte) (t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8);
+        y3 = (byte) (t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8);
+        y4 = (byte) (t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7);
+        y5 = (byte) (t1 ^ t2 ^ t6 ^ t7 ^ t8);
+        y6 = (byte) (t2 ^ t3 ^ t5 ^ t7 ^ t8);
+        y7 = (byte) (t3 ^ t4 ^ t5 ^ t6 ^ t8);
+        y8 = (byte) (t1 ^ t4 ^ t5 ^ t6 ^ t7);
+
+        return  (y1 << 56) | (y2 << 48) | (y3 << 40) | (y4 << 32)
+                | (y5 << 24) | (y6 << 16) | (y7 <<  8) | y8;
     }
 }
