@@ -9,8 +9,8 @@ public class Camellia {
      * Implementation of 128 bit key length Camellia cipher
      */
 
-    private static final long key = 37529104;
-    private static final String message = " 0123456789abcdeffedcba9876543210";
+    private static final long key = 3752934253104L;
+    private static final long message = 7259475248759574234L;
 
     public static final long MASK8 = 0xffL;
     public static final long MASK32 = 0xffffL;
@@ -26,11 +26,18 @@ public class Camellia {
 
 
     private long kl, kr, d1, d2, ka, kb;
+    private long kw1, kw2, kw3, kw4;
+    private long k1, k2, k3, k4, k5, k6, k7, k8, k9,
+            k10, k11, k12, k13, k14, k15, k16, k17, k18;
+    private long ke1, ke2, ke3, ke4;
+    private long cipherText;
 
     public Camellia() {
         createKeys();
         generateSupportKeys();
         calculateSupportKeys();
+        encrypt();
+        System.out.println("cipherText" + String.valueOf(cipherText));
     }
 
     private void createKeys() {
@@ -56,10 +63,6 @@ public class Camellia {
     }
 
     private void calculateSupportKeys() {
-        long kw1, kw2, kw3, kw4;
-        long k1, k2, k3, k4, k5, k6, k7, k8, k9,
-                k10, k11, k12, k13, k14, k15, k16, k17, k18;
-        long ke1, ke2, ke3, ke4;
         kw1 = (kl) >> 64;
         kw2 = (kl) & MASK64;
         k1  = (ka) >> 64; k2  = (ka & MASK64);
@@ -74,5 +77,23 @@ public class Camellia {
         k15 = (ka <<  94) >> 64; k16 = (ka <<  94) & MASK64;
         k17 = (kl << 111) >> 64; k18 = (kl << 111) & MASK64;
         kw3 = (ka << 111) >> 64;kw4 = (ka << 111) & MASK64;
+    }
+
+    private void encrypt() {
+        d1 = message >> 64; d2 = message & MASK64;
+        d1 = d1 ^ kw1; d2 = d2 ^ kw2;
+        d2 = d2 ^ Functions.F(d1, k1); d1 = d1 ^ Functions.F(d2, k2);
+        d2 = d2 ^ Functions.F(d1, k3); d1 = d1 ^ Functions.F(d2, k4);
+        d2 = d2 ^ Functions.F(d1, k5); d1 = d1 ^ Functions.F(d2, k6);
+        d1 = Functions.FL(d1, ke1); d2 = Functions.FLINV(d2, ke2);
+        d2 = d2 ^ Functions.F(d1, k7); d1 = d1 ^ Functions.F(d2, k8);
+        d2 = d2 ^ Functions.F(d1, k9); d1 = d1 ^ Functions.F(d2, k10);
+        d2 = d2 ^ Functions.F(d1, k11); d1 = d1 ^ Functions.F(d2, k12);
+        d1 = Functions.FL   (d1, ke3); d2 = Functions.FLINV(d2, ke4);
+        d2 = d2 ^ Functions.F(d2, k13); d1 = d1 ^ Functions.F(d2, k14);
+        d2 = d2 ^ Functions.F(d1, k15); d1 = d1 ^ Functions.F(d2, k16);
+        d2 = d2 ^ Functions.F(d1, k17); d1 = d1 ^ Functions.F(d2, k18);
+        d2 = d2 ^ kw3; d1 = d1 ^ kw4;
+        cipherText = (d2 << 64) | d1;
     }
 }

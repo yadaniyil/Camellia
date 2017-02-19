@@ -23,6 +23,9 @@ public class SBox {
     };
 
     public static byte getSBox1(byte value) {
+        if(value < 0) {
+            value = (byte) toUnsignedByte(value);
+        }
         byte[] values = Utils.getByteValues(value);
         if(values == null || values.length < 1) {
             return 0;

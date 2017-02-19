@@ -37,4 +37,29 @@ public class Functions {
         return  (y1 << 56) | (y2 << 48) | (y3 << 40) | (y4 << 32)
                 | (y5 << 24) | (y6 << 16) | (y7 <<  8) | y8;
     }
+
+    public static long FL(long flIn, long ke) {
+        long x1, x2;
+        long k1, k2;
+        x1 = flIn >> 32;
+        x2 = flIn & Camellia.MASK32;
+        k1 = ke >> 32;
+        k2 = ke & Camellia.MASK32;
+        x2 = x2 ^ ((x1 & k1) << 1);
+        x1 = x1 ^ (x2 | k2);
+        return (x1 << 32) | x2;
+    }
+
+
+    public static long FLINV(long flinvIn, long ke) {
+        long y1, y2;
+        long k1, k2;
+        y1 = flinvIn >> 32;
+        y2 = flinvIn & Camellia.MASK32;
+        k1 = ke >> 32;
+        k2 = ke & Camellia.MASK32;
+        y1 = y1 ^ (y2 | k2);
+        y2 = y2 ^ ((y1 & k1) << 1);
+        return (y1 << 32) | y2;
+    }
 }
